@@ -13,6 +13,7 @@ router.post('/register', register);
 
 // Aplica o rate limiter APENAS na rota de login
 router.post('/login', authLimiter, login);
+router.post('/refresh', refresh);
 
 // Rotas Privadas (Protegidas)
 router.get('/profile', protect, getProfile);
