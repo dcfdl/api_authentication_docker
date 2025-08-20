@@ -3,7 +3,7 @@ services:
   - type: web
     name: auth-api-app
     env: docker
-    repo: https://github.com/dcfdl/api_authentication_docker.git
+    repo: https://github.com/dcfdl/api_authentication_docker.git # <-- VERIFIQUE SE ESTE É O NOME CORRETO DO SEU REPOSITÓRIO
     region: oregon
     plan: free
     healthCheckPath: /api/health
@@ -19,9 +19,9 @@ services:
           name: auth-api-redis
           property: connectionString
       - key: JWT_SECRET
-        sync: false # Indica que é um segredo e será inserido manualmente
+        sync: false
       - key: JWT_REFRESH_SECRET
-        sync: false # Indica que é um segredo e será inserido manualmente
+        sync: false
       - key: JWT_REFRESH_EXPIRES_IN
         value: 7d
 
@@ -29,9 +29,8 @@ services:
   - type: pserv
     name: auth-api-mongo
     env: docker
-    repo: https://github.com/dcfdl/api_authentication_docker.git 
-    image:
-      dockerfilePath: mongo.Dockerfile
+    repo: https://github.com/dcfdl/api_authentication_docker.git # <-- VERIFIQUE SE ESTE É O NOME CORRETO DO SEU REPOSITÓRIO
+    dockerfilePath: ./mongo.Dockerfile # <-- CORRETO: Sem a chave "image:"
     region: oregon
     plan: free
     disk:
