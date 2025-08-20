@@ -31,7 +31,7 @@ services:
     env: docker
     repo: https://github.com/dcfdl/NOME-DO-SEU-REPOSITORIO.git # <-- MUDE AQUI
     image:
-      path: ./mongo.Dockerfile # Usaremos um Dockerfile customizado para o Mongo
+      path: mongo.Dockerfile # Usaremos um Dockerfile customizado para o Mongo
     region: oregon
     plan: free
     disk:
