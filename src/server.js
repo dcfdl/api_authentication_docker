@@ -28,14 +28,15 @@ const connectDB = async () => {
 // --- 5. MIDDLEWARES ---
 app.use(cors());
 app.use(express.json());
-app.use(express.static('public')); 
+app.use(express.static('public'));
 
 // --- 6. ROTAS ---
 app.use('/api/auth', authRoutes);
 app.get('/api/health', (req, res) => {
-  const mongoStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
-  const redisStatus = redisClient.status === 'ready' ? 'connected' : 'disconnected';
-
+  const mongoStatus =
+    mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
+  const redisStatus =
+    redisClient.status === 'ready' ? 'connected' : 'disconnected';
 
   res.status(200).json({
     status: 'ok',
@@ -45,19 +46,26 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-
 // --- 7. INICIALIZAÇÃO DO SERVIDOR ---
 const startServer = async () => {
   const isDbConnected = await connectDB();
 
   if (isDbConnected) {
-    app.listen(PORT, () => {
-      console.log(`Servidor rodando na porta ${PORT}`);
-    });
+    // Só inicia o servidor se o arquivo for executado diretamente
+    if (require.main === module) {
+      app.listen(PORT, () => {
+        console.log(`Servidor rodando na porta ${PORT}`);
+      });
+    }
   } else {
     console.log('Servidor não iniciado devido à falha na conexão com o banco de dados.');
   }
 };
 
-// Inicia a aplicação
-startServer();
+// Apenas inicia o servidor se este arquivo for executado diretamente
+if (require.main === module) {
+  startServer();
+}
+
+// Exporta o app para ser usado nos testes
+module.exports = app;

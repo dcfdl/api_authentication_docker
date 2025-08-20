@@ -1,26 +1,29 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'O nome é obrigatório.'],
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'O nome é obrigatório.'],
+    },
+    email: {
+      type: String,
+      required: [true, 'O email é obrigatório.'],
+      unique: true,
+      lowercase: true,
+      match: [/\S+@\S+\.\S+/, 'Por favor, use um email válido.'],
+    },
+    password: {
+      type: String,
+      required: [true, 'A senha é obrigatória.'],
+      minlength: 6,
+    },
   },
-  email: {
-    type: String,
-    required: [true, 'O email é obrigatório.'],
-    unique: true, 
-    lowercase: true, 
-    match: [/\S+@\S+\.\S+/, 'Por favor, use um email válido.'],
-  },
-  password: {
-    type: String,
-    required: [true, 'A senha é obrigatória.'],
-    minlength: 6, 
-  },
-}, {
-  timestamps: true, 
-});
+  {
+    timestamps: true,
+  }
+);
 
 // Middleware (hook) do Mongoose que é executado ANTES de salvar o documento
 userSchema.pre('save', async function (next) {

@@ -42,6 +42,7 @@ Siga os passos abaixo para configurar e executar a aplicação em seu ambiente l
 ### Instalação
 
 1.  **Clone o repositório:**
+
     ```bash
     git clone [https://github.com/dcfdl/NOME-DO-SEU-REPOSITORIO.git](https://github.com/dcfdl/NOME-DO-SEU-REPOSITORIO.git)
     cd NOME-DO-SEU-REPOSITORIO
@@ -49,13 +50,16 @@ Siga os passos abaixo para configurar e executar a aplicação em seu ambiente l
 
 2.  **Crie o arquivo de variáveis de ambiente:**
     Crie uma cópia do arquivo de exemplo `.env.example` e renomeie para `.env`.
+
     ```bash
     cp .env.example .env
     ```
-    *Obs: O arquivo `.env` já está no `.gitignore` para não ser enviado ao seu repositório.*
+
+    _Obs: O arquivo `.env` já está no `.gitignore` para não ser enviado ao seu repositório._
 
 3.  **Preencha o arquivo `.env`:**
     Abra o arquivo `.env` e, se necessário, ajuste as variáveis. O `JWT_SECRET` deve ser uma string longa e aleatória.
+
     ```
     # Aplicação
     PORT=3000
@@ -87,7 +91,9 @@ Aqui está a lista de endpoints disponíveis para teste.
 ### Autenticação
 
 #### `POST /api/auth/register`
+
 Registra um novo usuário.
+
 - **Autenticação:** Pública.
 - **Body:**
   ```json
@@ -105,7 +111,9 @@ Registra um novo usuário.
   ```
 
 #### `POST /api/auth/login`
+
 Autentica um usuário e retorna um token JWT.
+
 - **Autenticação:** Pública.
 - **Body:**
   ```json
@@ -122,7 +130,9 @@ Autentica um usuário e retorna um token JWT.
   ```
 
 #### `POST /api/auth/logout`
+
 Realiza o logout do usuário, invalidando a sessão no Redis.
+
 - **Autenticação:** Privada (requer token).
 - **Header:** `Authorization: Bearer <seu_token>`
 - **Resposta de Sucesso (200 OK):**
@@ -135,7 +145,9 @@ Realiza o logout do usuário, invalidando a sessão no Redis.
 ### Usuários
 
 #### `GET /api/auth/profile`
+
 Retorna os dados do usuário autenticado.
+
 - **Autenticação:** Privada (requer token).
 - **Header:** `Authorization: Bearer <seu_token>`
 - **Resposta de Sucesso (200 OK):**
@@ -152,6 +164,7 @@ Retorna os dados do usuário autenticado.
 ---
 
 ## 📂 Estrutura do Projeto
+
 ```
 /
 ├── public/             # Arquivos do Frontend (HTML, CSS)
