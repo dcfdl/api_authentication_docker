@@ -4,7 +4,7 @@ services:
     name: auth-api-app
     env: docker
     repo: https://github.com/dcfdl/api_authentication_docker.git
-    region: oregon 
+    region: oregon
     plan: free
     healthCheckPath: /api/health
     envVars:
@@ -31,7 +31,7 @@ services:
     env: docker
     repo: https://github.com/dcfdl/api_authentication_docker.git 
     image:
-      dockerfilePath: ./mongo.Dockerfile
+      dockerfilePath: mongo.Dockerfile
     region: oregon
     plan: free
     disk:
