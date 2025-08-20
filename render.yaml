@@ -3,8 +3,8 @@ services:
   - type: web
     name: auth-api-app
     env: docker
-    repo: https://github.com/dcfdl/NOME-DO-SEU-REPOSITORIO.git # <-- MUDE AQUI
-    region: oregon # Pode escolher outra região se preferir
+    repo: https://github.com/dcfdl/api_authentication_docker.git
+    region: oregon 
     plan: free
     healthCheckPath: /api/health
     envVars:
@@ -29,9 +29,9 @@ services:
   - type: pserv
     name: auth-api-mongo
     env: docker
-    repo: https://github.com/dcfdl/NOME-DO-SEU-REPOSITORIO.git # <-- MUDE AQUI
+    repo: https://github.com/dcfdl/api_authentication_docker.git 
     image:
-      path: mongo.Dockerfile # Usaremos um Dockerfile customizado para o Mongo
+      dockerfilePath: ./mongo.Dockerfile
     region: oregon
     plan: free
     disk:
