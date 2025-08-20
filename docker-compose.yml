@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Serviço da nossa API Node.js
+  app:
+    container_name: auth_api_app
+    build: . # Constrói a imagem a partir do Dockerfile na pasta atual
+    ports:
+      - "3000:3000" # Mapeia a porta 3000 do host para a 3000 do contêiner
+    volumes:
+      - ./src:/usr/src/app/src # Mapeia a pasta 'src' local para dentro do contêiner
+    env_file:
+      - .env # Carrega as variáveis de ambiente do arquivo .env
+    depends_on: # Garante que o MongoDB e o Redis iniciem antes da nossa API
+      - mongo
+      - redis
+
+  # Serviço do Banco de Dados MongoDB
+  mongo:
+    container_name: auth_api_mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db # Persiste os dados do MongoDB
+    env_file:
+      - .env
+
+  # Serviço do Cache/Sessão Redis
+  redis:
+    container_name: auth_api_redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data # Persiste os dados do Redis
+
+volumes:
+  mongodb_data:
+  redis_data:

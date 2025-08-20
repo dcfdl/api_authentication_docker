@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/style.css"> </head>
+</head>
+<body>
+    <h1>Área Protegida</h1>
+    <h2 id="welcomeMessage"></h2>
+    <button id="logoutButton">Logout</button>
+
+    <script>
+        // Esta função é executada assim que a página é carregada
+        window.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+
+            // 1. Se não houver token, o usuário não está logado. Redireciona para o login.
+            if (!token) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                // 2. Tenta buscar os dados do perfil usando o token
+                const response = await fetch('/api/auth/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('welcomeMessage').textContent = `Bem-vindo(a), ${user.name}!`;
+                } else {
+                    // 3. Se o token for inválido/expirado, o servidor retornará um erro.
+                    // Limpa o token "ruim" e redireciona para o login.
+                    localStorage.removeItem('token');
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                localStorage.removeItem('token');
+                window.location.href = '/login.html';
+            }
+        });
+
+        // Adiciona a lógica ao botão de logout
+        document.getElementById('logoutButton').addEventListener('click', async () => {
+            const token = localStorage.getItem('token');
+            try {
+                await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+            } finally {
+                // Independentemente do resultado da API, limpa o token local e redireciona
+                localStorage.removeItem('token');
+                alert('Você foi desconectado.');
+                window.location.href = '/login.html';
+            }
+        });
+    </script>
+</body>
+</html>
