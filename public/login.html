@@ -35,10 +35,12 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // Ponto crucial: Salva o token no armazenamento local do navegador
-                    localStorage.setItem('token', data.token); 
+                    // CORREÇÃO: Salva ambos os tokens no localStorage
+                    localStorage.setItem('accessToken', data.accessToken); 
+                    localStorage.setItem('refreshToken', data.refreshToken); 
+                    
                     alert('Login bem-sucedido!');
-                    window.location.href = '/dashboard.html'; // Redireciona para a área protegida
+                    window.location.href = '/dashboard.html';
                 } else {
                     alert('Erro no login: ' + data.message);
                 }

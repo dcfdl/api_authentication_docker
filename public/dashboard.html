@@ -7,24 +7,47 @@
 </head>
 <body>
     <h1>Área Protegida</h1>
-    <h2 id="welcomeMessage"></h2>
-    <div class="main-content">
-        <button id="logoutButton">Logout</button>
-    </div>
+    <h2 id="welcomeMessage">Carregando...</h2>
+    <button id="logoutButton">Logout</button>
 
     <script>
-        // Esta função é executada assim que a página é carregada
-        window.addEventListener('DOMContentLoaded', async () => {
-            const token = localStorage.getItem('token');
+        // Função para redirecionar para o login e limpar os tokens
+        function redirectToLogin() {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            window.location.href = '/login.html';
+        }
 
-            // 1. Se não houver token, o usuário não está logado. Redireciona para o login.
-            if (!token) {
-                window.location.href = '/login.html';
-                return;
+        // Função para tentar renovar o access token
+        async function refreshAccessToken() {
+            const refreshToken = localStorage.getItem('refreshToken');
+            if (!refreshToken) {
+                redirectToLogin();
+                return null;
             }
 
             try {
-                // 2. Tenta buscar os dados do perfil usando o token
+                const response = await fetch('/api/auth/refresh', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ refreshToken })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('accessToken', data.accessToken);
+                    return data.accessToken;
+                } else {
+                    return null;
+                }
+            } catch (error) {
+                return null;
+            }
+        }
+
+        // Função principal para buscar os dados do perfil
+        async function fetchProfile(token) {
+            try {
                 const response = await fetch('/api/auth/profile', {
                     method: 'GET',
                     headers: {
@@ -35,32 +58,49 @@
                 if (response.ok) {
                     const user = await response.json();
                     document.getElementById('welcomeMessage').textContent = `Bem-vindo(a), ${user.name}!`;
+                    return true;
+                } else if (response.status === 401) {
+                    // Se o token de acesso expirou, tenta renová-lo
+                    const newAccessToken = await refreshAccessToken();
+                    if (newAccessToken) {
+                        // Tenta buscar o perfil novamente com o novo token
+                        return await fetchProfile(newAccessToken);
+                    } else {
+                        redirectToLogin();
+                        return false;
+                    }
                 } else {
-                    // 3. Se o token for inválido/expirado, o servidor retornará um erro.
-                    // Limpa o token "ruim" e redireciona para o login.
-                    localStorage.removeItem('token');
-                    window.location.href = '/login.html';
+                    redirectToLogin();
+                    return false;
                 }
             } catch (error) {
                 console.error('Erro:', error);
-                localStorage.removeItem('token');
-                window.location.href = '/login.html';
+                redirectToLogin();
+                return false;
+            }
+        }
+
+        // Executa ao carregar a página
+        window.addEventListener('DOMContentLoaded', () => {
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                redirectToLogin();
+            } else {
+                fetchProfile(accessToken);
             }
         });
 
-        // Adiciona a lógica ao botão de logout
+        // Lógica do botão de logout
         document.getElementById('logoutButton').addEventListener('click', async () => {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('accessToken');
             try {
                 await fetch('/api/auth/logout', {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
             } finally {
-                // Independentemente do resultado da API, limpa o token local e redireciona
-                localStorage.removeItem('token');
                 alert('Você foi desconectado.');
-                window.location.href = '/login.html';
+                redirectToLogin();
             }
         });
     </script>
