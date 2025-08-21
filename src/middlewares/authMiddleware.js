@@ -1,10 +1,6 @@
-// src/middlewares/authMiddleware.js
-
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 const redisClient = require('../config/redis');
-
-// Em src/middlewares/authMiddleware.js
 
 const protect = async (req, res, next) => {
   let token;

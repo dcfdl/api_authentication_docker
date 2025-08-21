@@ -1,5 +1,3 @@
-// tests/auth.test.js
-
 const request = require('supertest');
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
@@ -8,8 +6,7 @@ const User = require('../src/models/userModel');
 const redisClient = require('../src/config/redis');
 
 // SIMULAÇÃO (MOCK) DO REDIS:
-// O Jest irá interceptar qualquer chamada para '../src/config/redis'
-// e usar este objeto falso em vez do real.
+
 jest.mock('../src/config/redis', () => ({
   get: jest.fn(),
   set: jest.fn(),
@@ -28,7 +25,7 @@ beforeAll(async () => {
 afterAll(async () => {
   await mongoose.disconnect();
   await mongoServer.stop();
-  await redisClient.quit(); // Agora chama a função 'quit' simulada
+  await redisClient.quit(); 
 });
 
 beforeEach(async () => {
